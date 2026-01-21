@@ -21,11 +21,8 @@ import uuid
 # Get the folder where this script (app.py) lives
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# --- DEBUGGING: PRINT THESE TO SCREEN ---
-st.write(f"📂 Script Location: `{BASE_DIR}`")
 try:
     files_in_dir = os.listdir(BASE_DIR)
-    st.write(f"📄 Files found here: `{files_in_dir}`")
 except Exception as e:
     st.error(f"Cannot read directory: {e}")
 
