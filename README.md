@@ -1,4 +1,4 @@
-# 🛡️ AI-Powered Women Safety Badge (IoT + TinyML)
+# 🛡️ TinySafetyNET
 
 > **Real-time distress detection system using Deep Learning Audio Analysis and IoT alerts.**
 
