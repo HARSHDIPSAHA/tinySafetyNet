@@ -34,36 +34,60 @@ Using such lightweight intelligence for women safety applications makes it even 
 
 ## 🧩 Model Architecture (DS-CNN)
 
-This is the exact architecture used in the training script for the DS-CNN model (see training code in the repo). It consumes MFCC features shaped as (40, T, 1) where T is the number of time frames.
+A simple view of the model used for audio emotion detection. It takes MFCC features as input and produces a probability over classes.
 
-- Input: (40, T, 1) MFCCs
-- Conv2D 32 filters, 3×3, stride 2, same padding → BatchNorm → ReLU
-- DepthwiseConv2D 3×3, stride 1, same padding → BatchNorm → ReLU
-- Pointwise Conv2D (1×1) 64 filters → BatchNorm → ReLU
-- DepthwiseConv2D 3×3, stride 2, same padding → BatchNorm → ReLU
-- Pointwise Conv2D (1×1) 128 filters → BatchNorm → ReLU
-- GlobalAveragePooling2D
-- Dropout 0.4
-- Dense Softmax (num_classes)
-
-Rationale: Depthwise Separable Convolutions drastically reduce parameters and compute while preserving spatial-temporal feature quality, making the model compact and TFLite-friendly for TinyML deployments.
+```mermaid
+flowchart LR
+  A[Input: MFCC features (40 × T × 1)] --> B[Conv layer (downsamples)]
+  B --> C[Lightweight conv block 1]
+  C --> D[Lightweight conv block 2]
+  D --> E[Global average pooling]
+  E --> F[Dropout (0.4)]
+  F --> G[Final dense layer → softmax]
+  G --> H[Output: emotion class]
+```
 
 ---
 
 ## 📂 Project Structure
 
 ```bash
-
-├── 📁 TINYSAFETYNET/streamlit-int8-app/
-
-│   ├── app2.py                # Main Real-Time Streamlit Application
-
-│   ├── app.py                # Streamlit Application to upload audio and get it processed
-
-│   └──  women_safety_dscnn_f16.tflite  # Trained AI Model (Quantized)
-
-
-
+tinySafetyNet/
+├── README.md
+├── requirements.txt
+└── week1/
+  ├── augmentations/
+  │   └── aug.py
+  ├── Model conversions/
+  │   ├── bin2c.py
+  │   ├── convert.py
+  │   ├── export_to_onnx.py
+  │   ├── fix_onnx_ir.py
+  │   ├── onnx_to_tf.py
+  │   ├── simulate_tflite.py
+  │   ├── test_tflite.py
+  │   ├── tf_to_tfli te.py
+  │   ├── tflite_int8.py
+  │   └── tiny_safety_3class*.{onnx,pth,tflite}
+  ├── streamlit-int8-app/
+  │   ├── app.py
+  │   ├── app2.py
+  │   ├── classes.npy
+  │   ├── women_safety_dscnn_f16.tflite
+  │   └── audios/
+  ├── Streamlit-testing-on .pth model/
+  │   ├── app_pth.py
+  │   ├── environment.yml
+  │   ├── inference.py
+  │   ├── tiny_safety_3class.pth
+  │   └── train.py
+  └── trainModels/
+    ├── infer_dcCNN.py
+    ├── train_2class.py
+    ├── train_dcCNN.py
+    └── models/
+      ├── women_safety_dscnn_f16.tflite
+      └── women_safety_lstm_fixed.tflite
 ```
 
 ---
