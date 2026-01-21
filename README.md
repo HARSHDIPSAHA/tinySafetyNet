@@ -4,7 +4,10 @@
 
 This project is a **Smart Safety Badge** simulation that listens to environmental audio in real-time. It uses a **Deep Learning model (DS-CNN)** to detect specific distress emotions like **Fear** (screaming) or **Anger** (aggression). When a threat is detected, it instantly triggers a visual and audio alarm on a wearable badge (simulated via **Wokwi**) over WiFi using **MQTT**.
 
----
+Interestingly, my model is just 40 KB, small enough to fit even on ultra-low flash memory IoT devices.
+This is what real TinyML feels like — efficient, deployable, and impactful.
+
+Using such lightweight intelligence for women safety applications makes it even more meaningful. 🫶---
 
 ## 🌟 Features
 
