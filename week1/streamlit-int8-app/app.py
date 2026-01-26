@@ -148,8 +148,8 @@ def preprocess_audio(audio_path):
 # ==========================================
 # 5. STREAMLIT UI (FIXED)
 # ==========================================
-st.title("🛡️ Women Safety Analytics (Wokwi Linked)")
-st.markdown(f"**Connected to:** `{CONFIG['mqtt_topic']}` on `{CONFIG['mqtt_broker']}`")
+st.title("🛡️ TinySafetyNet - Women Safety Analytics ")
+#st.markdown(f"**Connected to:** `{CONFIG['mqtt_topic']}` on `{CONFIG['mqtt_broker']}`")
 
 # --- Helper Function to Process Audio ---
 def analyze_audio(source):
