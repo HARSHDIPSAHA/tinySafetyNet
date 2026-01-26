@@ -1,0 +1,22 @@
+install.packages("shiny")   # run only once
+library(shiny)
+
+ui <- fluidPage(
+  titlePanel("My First R Website"),
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("num", "Select a number:", 1, 100, 50)
+    ),
+    mainPanel(
+      textOutput("result")
+    )
+  )
+)
+
+server <- function(input, output) {
+  output$result <- renderText({
+    paste("You selected:", input$num)
+  })
+}
+
+shinyApp(ui, server)
