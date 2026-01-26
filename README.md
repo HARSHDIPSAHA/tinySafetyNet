@@ -99,9 +99,19 @@ tinySafetyNet/
     └── models/
       ├── women_safety_dscnn_f16.tflite
       └── women_safety_lstm_fixed.tflite
+└── week2/                                 
+    ├── app.R                               
+    ├── Basic.R                             
+    ├── tess_emotion_log.xlsx           
+    ├── synthetic_emotion_inference.xlsx
+    ├── Convert_dataset_to_excel.py    
+    ├── synthetic_data_generation.py    
+    ├── .RData                              
+    └── .Rhistory                          
 ```
 
 ---
+
 
 ## 🚀 Part 1: Python Setup (The Brain)
 
@@ -316,3 +326,111 @@ CONFIG = {
 
 
 ```
+## Week2
+
+This section provides a web application in the form of an interactive Shiny dashboard built using R for analyzing audio emotion inference results.
+It allows users to upload inference datasets (CSV or Excel), map emotions into custom classes, and visualize trends over time.
+
+Features
+- Upload CSV or Excel inference datasets, that will contain dynamic emotion inference mapping
+- Interactive visualizations including class distribution, timelines, daily trends, hour-wise heatmaps, and per-ID analysis
+- Dark and light mode toggle
+- Time-based filtering for recent data
+
+Dataset Format
+The uploaded dataset must contain at least three columns:
+1. id – Device or audio identifier
+2. timestamp – Time in HH:MM:SS format
+3. inference_of_emotion – Predicted emotion label
+
+The time-only values are automatically converted into full timestamps(YYYY-MM-DD HH:MM:SS) inside the application.
+
+Dashboard Tabs Description
+Class Distribution:
+Shows the number of samples falling into each user-defined class.
+
+Timeline:
+Displays emotion or class occurrences over time.
+
+Daily Trend:
+Aggregates class counts per day to identify overall emotional trends.
+
+Hour-wise Heatmap:
+Visualizes emotional activity distribution across hours of the day.
+
+Per-ID Analysis:
+Allows focused analysis on a specific device or audio ID.
+
+How to Run the Application
+Install R
+Windows / macOS / Linux
+1. Go to CRAN (official R website)
+    👉 https://cran.r-project.org
+    - Download and install R (latest version)
+    - During installation, keep all default options
+
+✔ After installation, you should be able to open R or R-GUI
+
+2. Install RStudio (Strongly Recommended)
+    RStudio makes running Shiny apps much easier.
+    - Go to 👉 https://posit.co/download/rstudio-desktop/
+    - Download RStudio Desktop (Free)
+    - Install it normally
+✔ Open RStudio after installation
+
+3. Clone or Download the Repository
+   Option A: Download ZIP (Beginner-friendly)
+    - Open the GitHub repository
+    - Click Code → Download ZIP
+    - Extract the folder to any location
+    (e.g., Desktop or Documents)
+
+    Option B: Git (Optional)
+    git clone <repository-url>
+
+4. Open the Project in RStudio
+    - Open RStudio
+    - Click File → Open Folder
+    - Select the folder containing app.R
+
+You should now see app.R in the Files pane
+
+5. Install Required R Packages
+    In the RStudio Console, run this once:
+    install.packages(c(
+      "shiny",
+      "readxl",
+      "readr",
+      "dplyr",
+      "ggplot2",
+      "lubridate",
+      "tidyr",
+      "bslib"
+    ))
+📌 Notes:
+•	Ignore Rtools warnings (not required for this app)
+
+6. Run the Shiny App
+    Method 1 (Recommended)
+    - Open app.R
+    - Click the Run App button (top-right of editor)
+    Method 2 (Console)
+    shiny::runApp()
+✔ The app will open in your browser at:
+    http://127.0.0.1:<port>
+
+✅ System Requirements
+•	R ≥ 4.2
+
+Contents of week2 folder:
+1. app.R ---> Main Shiny application
+2. Basic.R ---> To test if R is installed and shiny package is working
+3. tess_emotion_log.xlsx ---> File generated from TESS dataset for input to the app.R
+4. synthetic_emotion_inference.xlsx ---> Synthetically generated dataset
+5. Convert_dataset_to_excel.py ---> Dataset conversion from TESS dataset to .xlsx file
+6. synthetic_data_generation.py ---> Synthetic data creation python script
+7. .RData ---> R workspace (auto-generated)
+8. .Rhistory ---> R command history for your reference
+
+
+
