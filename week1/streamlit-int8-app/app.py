@@ -223,19 +223,19 @@ def analyze_audio(source):
         pass
 
 # --- Create Tabs ---
-tab1, tab2 = st.tabs(["📂 Upload File", "🎤 Record Audio"])
-
-# --- Tab 1: Upload Logic ---
-with tab1:
-    uploaded_file = st.file_uploader("Upload Audio (WAV/MP3)", type=["wav", "mp3"])
-    if uploaded_file:
-        analyze_audio(uploaded_file)
+tab1, tab2 = st.tabs(["🎤 Record Audio", "📂 Upload File"])
 
 # --- Tab 2: Record Logic ---
-with tab2:
+with tab1:
     recorded_audio = st.audio_input("Record a voice note")
     if recorded_audio:
         analyze_audio(recorded_audio)
+        
+# --- Tab 1: Upload Logic ---
+with tab2:
+    uploaded_file = st.file_uploader("Upload Audio (WAV/MP3)", type=["wav", "mp3"])
+    if uploaded_file:
+        analyze_audio(uploaded_file)
 
     # # Cleanup
     # os.remove(audio_path)
