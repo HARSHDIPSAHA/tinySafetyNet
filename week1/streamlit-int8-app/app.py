@@ -149,7 +149,12 @@ def preprocess_audio(audio_path):
 # 5. STREAMLIT UI (FIXED)
 # ==========================================
 st.title("🛡️ TinySafetyNet - Women Safety Analytics ")
-#st.markdown(f"**Connected to:** `{CONFIG['mqtt_topic']}` on `{CONFIG['mqtt_broker']}`")
+st.subheader("Real-time women safety intelligence using TinyML + IoT")
+
+st.markdown("""
+TinySafetyNet analyzes audio to detect distress-related emotions and classifies risk as **Safe**, **Caution**, or **Danger**. When risk is detected, it sends an instant MQTT signal to connected devices for quick alerts—built to be lightweight and edge-deployable.
+""")
+
 
 # --- Helper Function to Process Audio ---
 def analyze_audio(source):
