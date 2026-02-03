@@ -9,6 +9,7 @@ library(bslib)
 library(tuneR)
 library(seewave)
 library(jsonlite)
+library(viridis)
 library(base64enc)
 
 # Increase max upload size to 30MB
@@ -148,17 +149,43 @@ server <- function(input, output, session) {
   raw_data <- reactive({
     req(input$files)
     files <- input$files
+    
     data_list <- lapply(seq_len(nrow(files)), function(i) {
       ext <- tools::file_ext(files$name[i])
-      df <- if (ext == "csv") read_csv(files$datapath[i], show_col_types = FALSE) else read_excel(files$datapath[i])
+      
+      df <- if (ext == "csv") {
+        readr::read_csv(files$datapath[i], show_col_types = FALSE)
+      } else {
+        readxl::read_excel(files$datapath[i])
+      }
+      
       colnames(df) <- tolower(colnames(df))
-      if ("timestamp" %in% colnames(df)) df$timestamp <- as.POSIXct(df$timestamp)
-      else if ("time" %in% colnames(df)) df$timestamp <- as.POSIXct(paste(Sys.Date(), df$time))
-      else stop("Missing 'timestamp' column")
-      if(!"id" %in% colnames(df)) df$id <- "Unknown"
-      df %>% select(id, timestamp, inference)
+      
+      # ---- ensure columns exist (match old behavior) ----
+      if (!all(c("id", "time", "inference") %in% colnames(df)) &&
+          ncol(df) >= 3) {
+        colnames(df)[1:3] <- c("id", "time", "inference")
+      }
+      
+      # ---- timestamp creation (same as old, but safer) ----
+      if ("timestamp" %in% colnames(df)) {
+        df$timestamp <- as.POSIXct(df$timestamp)
+      } else if ("time" %in% colnames(df)) {
+        df$time <- as.character(df$time)
+        df$timestamp <- as.POSIXct(
+          paste(Sys.Date(), df$time),
+          format = "%Y-%m-%d %H:%M:%S"
+        )
+      } else {
+        stop("Missing 'time' or 'timestamp' column")
+      }
+      
+      if (!"id" %in% colnames(df)) df$id <- "Unknown"
+      
+      df %>% dplyr::select(id, timestamp, inference)
     })
-    bind_rows(data_list)
+    
+    dplyr::bind_rows(data_list)
   })
   
   # 3. Dynamic Inputs
@@ -179,7 +206,16 @@ server <- function(input, output, session) {
   })
   
   # 5. Plots
-  my_theme <- function() list(theme_minimal(base_size=14), theme(plot.background=element_rect(fill="transparent",NA), legend.position="bottom"))
+  my_theme <- function() {
+    list(
+      theme_minimal(base_size = 14),
+      theme(
+        plot.background  = element_rect(fill = "transparent", color = NA),
+        panel.background = element_rect(fill = "transparent", color = NA),
+        legend.position  = "bottom"
+      )
+    )
+  }
   output$class_plot <- renderPlot({ req(classified_data()); ggplot(classified_data(), aes(class, fill=class)) + geom_bar() + scale_fill_viridis_d(option="turbo") + my_theme() })
   output$timeline_plot <- renderPlot({ req(classified_data()); ggplot(classified_data(), aes(timestamp, fill=class)) + geom_histogram(bins=50) + scale_fill_viridis_d(option="turbo") + my_theme() })
   output$daily_plot <- renderPlot({ req(classified_data()); classified_data() %>% mutate(d=as.Date(timestamp)) %>% count(d, class) %>% ggplot(aes(d, n, color=class)) + geom_line() + my_theme() })
