@@ -17,7 +17,7 @@ jobs:
         run: pip install pandas mlflow great_expectations
 
       - name: Run Integrity Validation
-        run: python week5/validate_data.py
+        run: python week5/data_validator.py
 
       - name: Run Drift Detection
         run: python week5/drift_detector.py
