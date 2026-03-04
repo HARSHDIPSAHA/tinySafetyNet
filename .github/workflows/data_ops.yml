@@ -1,0 +1,23 @@
+name: TinySafetyNet-MLOps
+on: [push]
+
+jobs:
+  audit-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Requirements
+        run: pip install pandas mlflow
+
+      - name: Run Integrity Validation
+        run: python tinysafety-ops/validate_data.py
+
+      - name: Run Drift Detection
+        run: python tinysafety-ops/drift_detector.py
