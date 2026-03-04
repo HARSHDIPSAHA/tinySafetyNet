@@ -170,8 +170,8 @@ def run_drift_check(
 
 def main():
     parser = argparse.ArgumentParser(description="TinySafetyNet: label drift detector")
-    parser.add_argument("--tess", default="data/tess_emotion_log.csv")
-    parser.add_argument("--synth", default="data/synthetic_emotion_inference.csv")
+    parser.add_argument("--tess", default="week5/data/tess_emotion_log.csv")
+    parser.add_argument("--synth", default="week5/data/synthetic_emotion_inference.csv")
     parser.add_argument("--per_label_threshold", type=float, default=0.20)
     parser.add_argument("--js_threshold", type=float, default=0.10)
     parser.add_argument("--min_rows_warn", type=int, default=200)
