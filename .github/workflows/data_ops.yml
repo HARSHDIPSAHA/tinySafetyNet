@@ -14,10 +14,10 @@ jobs:
           python-version: '3.9'
 
       - name: Install Requirements
-        run: pip install pandas mlflow
+        run: pip install pandas mlflow great_expectations
 
       - name: Run Integrity Validation
-        run: python tinysafety-ops/validate_data.py
+        run: python week5/validate_data.py
 
       - name: Run Drift Detection
-        run: python tinysafety-ops/drift_detector.py
+        run: python week5/drift_detector.py
