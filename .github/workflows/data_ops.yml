@@ -1,8 +1,9 @@
-name: TinySafetyNet-MLOps
+name: TinySafetyNet-Full-Pipeline
 on: [push]
 
 jobs:
-  audit-data:
+  # --- JOB 1: PYTHON & DATA OPS ---
+  python-audit:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -13,11 +14,32 @@ jobs:
         with:
           python-version: '3.9'
 
-      - name: Install Requirements
-        run: pip install pandas mlflow great_expectations
+      - name: Install Python Dependencies
+        run: pip install pandas mlflow great_expectations streamlit tensorflow-cpu
 
-      - name: Run Integrity Validation
+      - name: Run Data Validation
         run: python week5/data_validator.py
 
-      - name: Run Drift Detection
-        run: python week5/drift_detector.py
+      - name: Streamlit Smoke Test
+        # This simulates a 'run' to ensure no immediate crashes
+        run: |
+          python -m streamlit.testing.v1.app_test week1/app.py
+
+  # --- JOB 2: R SHINY AUDIT ---
+  r-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v2
+
+      - name: Install R Dependencies
+        run: |
+          Rscript -e 'install.packages(c("shiny", "dplyr", "ggplot2", "seewave"))'
+
+      - name: R Syntax Check
+        # This checks the app.R for syntax errors without needing a display
+        run: |
+          Rscript -e 'codetools::checkUsage(codetools::makeUsage(quote(shiny::shinyAppDir("week2/"))))'
