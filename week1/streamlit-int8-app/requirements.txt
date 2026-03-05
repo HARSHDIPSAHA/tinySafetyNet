@@ -3,3 +3,5 @@ numpy
 tensorflow-cpu
 librosa
 paho-mqtt
+pandas
+altair

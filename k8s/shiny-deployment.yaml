@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tinysafety-shiny
+spec:
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: shiny-dashboard
+  template:
+    metadata:
+      labels:
+        app: shiny-dashboard
+    spec:
+      containers:
+      - name: shiny
+        image: tinysafety-shiny:v1
+        imagePullPolicy: Never # Crucial: tells K8s to use the local build
+        ports:
+        - containerPort: 3838
+        resources:
+          limits:
+            memory: "1Gi" # R audio processing can be memory heavy!
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shiny-service
+spec:
+  type: LoadBalancer 
+  selector:
+    app: shiny-dashboard
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3838

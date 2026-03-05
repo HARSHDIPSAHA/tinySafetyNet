@@ -210,30 +210,32 @@ def analyze_audio(source):
                     st.markdown(f"**Detected Emotion:** {emotion.upper()}")
                     st.markdown(f"**Confidence:** {confidence:.2f}%")
                     
+                    # ... [Keep your existing safety logic above this] ...
+                    
                     if sent:
                         st.success(f"📡 Signal '{mqtt_cmd}' sent to Wokwi Badge.")
                     else:
                         st.error("❌ Failed to send signal to Wokwi.")
 
-                    chart_data = pd.DataFrame({
-                        "Emotion": classes,
-                        "Probability": probs
-                    })
+                    st.divider()
+                    st.markdown("### Confidence Breakdown")
 
-                    # 2. Build Altair Chart (Horizontal)
-                    c = alt.Chart(chart_data).mark_bar().encode(
-                        x=alt.X('Probability', axis=alt.Axis(format='%')), # Percent scale
-                        y=alt.Y('Emotion', sort='-x'),  # Sort bars by size
-                        color=alt.condition(
-                            alt.datum.Emotion == emotion,  # Highlight winner
-                            alt.value('orange'),
-                            alt.value('steelblue')
-                        )
-                    ).properties(height=300) # Ensure it has space
+                    # 1. CLEAN THE DATA TYPES (This is usually what crashes Docker)
+                    # Force probabilities to standard Python floats and classes to strings
+                    clean_probs = np.array(probs).astype(float).tolist()
+                    clean_classes = [str(c).title() for c in classes]
 
-                    # 3. Render
-                    st.altair_chart(c, use_container_width=True)
+                    # 2. CREATE A SIMPLE DATAFRAME
+                    chart_data = pd.DataFrame(
+                        {"Probability": clean_probs}, 
+                        index=clean_classes
+                    )
 
+                    # 3. USE STREAMLIT'S NATIVE CHART (No Altair required!)
+                    st.bar_chart(chart_data)
+                    
+                    # Debugging backup: If the chart STILL doesn't show, uncomment the next line
+                    st.dataframe(chart_data)
     # Cleanup
     try:
         os.remove(audio_path)
