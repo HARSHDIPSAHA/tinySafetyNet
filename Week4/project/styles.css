@@ -1,0 +1,55 @@
+/* Main app background */
+[data-testid="stAppViewContainer"] {
+    background-color: #701509;
+}
+
+/* Main content area */
+[data-testid="stHeader"] {
+    background-color: transparent;
+}
+
+/* Sidebar */
+[data-testid="stSidebar"] {
+    background-color: #e98644;
+}
+
+/* Text */
+html, body, p, span {
+    color: #F5E6E0;
+    font-family: Inter, sans-serif;
+}
+
+/* Headers */
+h1, h2, h3 {
+    color: #2c1c19;
+}
+
+/* Metric cards */
+[data-testid="stMetric"] {
+    background-color: #640000;
+    padding: 20px;
+    border-radius: 12px;
+    border-left: 5px solid #E24A2A;
+}
+
+/* Buttons */
+.stButton > button {
+    background-color: #E24A2A;
+    color: white;
+    border-radius: 8px;
+}
+
+.stButton > button:hover {
+    background-color: #B32E1D;
+}
+
+
+
+def load_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+load_css(r"C:\Users\Vibhav\Desktop\tinySafetyNet\Week4\project\styles.css")
+
+
+add above python snippet in dashboard.py to import styles
