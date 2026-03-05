@@ -19,6 +19,31 @@ Using such lightweight intelligence for women safety applications makes it even 
 * **⚠️ Angry/Aggression:** Yellow LED + Warning Beep.
 * **🟢 Safe Environment:** Steady Green LED.
 * **📊 Live Dashboard:** A **Streamlit** web interface to visualize confidence scores and detection status.
+* 🔍 **Automated Data Validation Pipelines**  
+* 🐳 Fully containerized using **Docker**
+* ☸️ Orchestrated via **Kubernetes (Minikube)**
+* 🔁 CI/CD enabled through **GitHub Actions**
+
+---
+
+## 📊 Polyglot Dashboards
+
+### 🐍 Live Inference Dashboard (Streamlit)
+- Real-time confidence scores
+- Inference state visualization
+- MQTT status tracking
+
+### 📈 Analytics Dashboard (R Shiny)
+- Historical emotion distribution
+- Hour-wise heatmaps
+- Class frequency charts
+- Interactive filters
+
+## 🏭 Enterprise MLOps
+- Docker containerization
+- Kubernetes deployment
+- Automated data validation jobs
+- CI/CD workflows
 
 ---
 
@@ -29,6 +54,8 @@ Using such lightweight intelligence for women safety applications makes it even 
 * **IoT Protocol:** MQTT (Paho-MQTT, HiveMQ Broker)
 * **Hardware Simulation:** Wokwi (ESP32)
 * **Dashboard:** Streamlit
+* **GitHub Actions:** Automated CI/CD pipeline for validation 
+* **Kubernetes:**: dockerized containers for both R app and the streamlit dashboard
 
 ---
 
@@ -60,54 +87,33 @@ flowchart TD
 
 ---
 
-## 📂 Project Structure
+# 📂 Project Structure
 
 ```bash
 tinySafetyNet/
-├── README.md
-├── requirements.txt
-└── week1/
-  ├── augmentations/
-  │   └── aug.py
-  ├── Model conversions/
-  │   ├── bin2c.py
-  │   ├── convert.py
-  │   ├── export_to_onnx.py
-  │   ├── fix_onnx_ir.py
-  │   ├── onnx_to_tf.py
-  │   ├── simulate_tflite.py
-  │   ├── test_tflite.py
-  │   ├── tf_to_tfli te.py
-  │   ├── tflite_int8.py
-  │   └── tiny_safety_3class*.{onnx,pth,tflite}
-  ├── streamlit-int8-app/
-  │   ├── app.py
-  │   ├── app2.py
-  │   ├── classes.npy
-  │   ├── women_safety_dscnn_f16.tflite
-  │   └── audios/
-  ├── Streamlit-testing-on .pth model/
-  │   ├── app_pth.py
-  │   ├── environment.yml
-  │   ├── inference.py
-  │   ├── tiny_safety_3class.pth
-  │   └── train.py
-  └── trainModels/
-    ├── infer_dcCNN.py
-    ├── train_2class.py
-    ├── train_dcCNN.py
-    └── models/
-      ├── women_safety_dscnn_f16.tflite
-      └── women_safety_lstm_fixed.tflite
-└── week2/                                 
-    ├── app.R                               
-    ├── Basic.R                             
-    ├── tess_emotion_log.xlsx           
-    ├── synthetic_emotion_inference.xlsx
-    ├── Convert_dataset_to_excel.py    
-    ├── synthetic_data_generation.py    
-    ├── .RData                              
-    └── .Rhistory                          
+│
+├── .github/workflows/          # CI/CD pipelines
+│
+├── k8s/                        # Kubernetes manifests
+│   ├── streamlit-deployment.yaml
+│   ├── shiny-deployment.yaml
+│   └── data-ops-cronjob.yaml
+│
+├── week1/                      # Python inference service
+│   └── streamlit-int8-app/
+│       ├── Dockerfile
+│       ├── app.py
+│       ├── requirements.txt
+│       ├── classes.npy
+│       └── women_safety_dscnn_f16.tflite
+│
+├── week2/                      # R analytics service
+│   ├── Dockerfile
+│   ├── app.R
+│   └── tess_emotion_log.xlsx
+│
+└── week5_ops/                  # Data validation layer
+    └── data_validator.py                       
 ```
 
 ---
@@ -432,5 +438,113 @@ Contents of week2 folder:
 7. .RData ---> R workspace (auto-generated)
 8. .Rhistory ---> R command history for your reference
 
+Here is your **properly structured Markdown section** with clean headers and correctly formatted `bash` and `powershell` code blocks:
 
+---
 
+# ☸️ Kubernetes Setup (Recommended Production Mode)
+
+This section explains how to run the entire TinySafetyNET ecosystem locally using **Minikube**.
+
+---
+
+## 🔹 Step 1: Prerequisites
+
+Make sure the following tools are installed:
+
+### 1️⃣ Docker Desktop  
+- Install and keep it **running in the background**
+
+### 2️⃣ Minikube
+
+```powershell
+winget install Kubernetes.minikube
+````
+
+### 3️⃣ Kubectl
+
+```powershell
+winget install Kubernetes.kubectl
+```
+
+---
+
+## 🔹 Step 2: Start Cluster & Connect Docker
+
+Start your local Kubernetes cluster and point your terminal to Minikube’s internal Docker daemon.
+
+```powershell
+# Start Minikube cluster
+minikube start --driver=docker
+
+# Point your terminal to Minikube's Docker environment
+& minikube -p minikube docker-env | Invoke-Expression
+```
+
+This allows Docker images to be built directly inside Minikube without pushing them to Docker Hub.
+
+---
+
+## 🔹 Step 3: Build Container Images
+
+Build the two microservice containers:
+
+```bash
+# Build Python Streamlit (Inference Service)
+docker build -t tinysafety-streamlit:v1 ./week1/streamlit-int8-app
+
+# Build R Shiny (Analytics Service)
+docker build -t tinysafety-shiny:v1 ./week2
+```
+
+> ⚠️ Note: The Shiny build may take a few minutes due to Linux dependency installation.
+
+---
+
+## 🔹 Step 4: Deploy to Kubernetes
+
+Apply the Kubernetes deployment manifests:
+
+```bash
+kubectl apply -f k8s/streamlit-deployment.yaml
+kubectl apply -f k8s/shiny-deployment.yaml
+```
+
+Verify the pods are running:
+
+```bash
+kubectl get pods
+```
+
+Wait until the `STATUS` shows:
+
+```
+Running
+```
+
+---
+
+## 🔹 Step 5: Launch the Dashboards
+
+Expose the services and open them in your browser:
+
+```bash
+# Open Streamlit Live Inference Dashboard
+minikube service streamlit-service
+
+# Open R Shiny Analytics Dashboard
+minikube service shiny-service
+
+# Open Kubernetes Control Dashboard
+minikube dashboard
+```
+
+---
+
+## ✅ System Ready
+
+Once both dashboards are accessible in the browser and pods show `Running`, your **TinySafetyNET Kubernetes cluster is fully operational**.
+
+```
+
+---
