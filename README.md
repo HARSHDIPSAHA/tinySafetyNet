@@ -441,8 +441,8 @@ Contents of week2 folder:
 Here is your **properly structured Markdown section** with clean headers and correctly formatted `bash` and `powershell` code blocks:
 
 
-Week 4
-# TinySafetyNet – AI Safety Prediction & Spark Analytics Platform
+# Week 4
+## TinySafetyNet – AI Safety Prediction & Spark Analytics Platform
 
 TinySafetyNet is a **Data Engineering + Machine Learning project** that simulates a real-world **women safety monitoring platform**.
 
